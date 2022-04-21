@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components/native";
 import Slide from "../components/Slide";
 import { Dimensions, ActivityIndicator, FlatList } from "react-native";
@@ -7,7 +7,7 @@ import HMedia from "../components/HMedia";
 import { useQuery, useQueryClient } from "react-query";
 import { moviesApi } from "../api";
 import Loader from "../components/Loader";
-import HList, { HListSeparator } from "../components/HList";
+import HList from "../components/HList";
 
 const { height: SCREEN_HEIGHT } = Dimensions.get("window");
 
@@ -24,6 +24,7 @@ const HSeparator = styled.View`
 
 const Movies = () => {
   const queryClient = useQueryClient();
+  const [refreshing, setRefreshing] = useState(false);
   const {
     isLoading: nowPlayingLoading,
     data: nowPlayingData,
@@ -39,8 +40,10 @@ const Movies = () => {
     data: trendingData,
     isRefetching: isRefetchingTrending,
   } = useQuery(["movies", "trending"], moviesApi.trending);
-  const onRefresh = () => {
-    queryClient.refetchQueries(["movies"]);
+  const onRefresh = async () => {
+    setRefreshing(true);
+    await queryClient.refetchQueries(["movies"]);
+    setRefreshing(false);
   };
 
   const renderHMedia = ({ item }) => (
@@ -55,8 +58,6 @@ const Movies = () => {
 
   const movieKeyExtractor = (item) => item.id + "";
   const loading = nowPlayingLoading || upcomingLoading || trendingLoading;
-  const refreshing =
-    isRefetchingNowPlaying || isRefetchingUpcoming || isRefetchingTrending;
   console.log(refreshing);
   return loading ? (
     <Loader />
