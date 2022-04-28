@@ -1,6 +1,8 @@
 import { BlurView } from "@react-native-community/blur";
+import { useNavigation } from "@react-navigation/native";
 import React from "react";
 import { View, StyleSheet, useColorScheme } from "react-native";
+import { TouchableWithoutFeedback } from "react-native";
 import styled from "styled-components/native";
 import { makeImgPath } from "../utils";
 import Poster from "./Poster";
@@ -41,29 +43,36 @@ const Slide = ({
   original_title,
   vote_average,
   overview,
+  fullData,
 }) => {
   const isDark = useColorScheme() === "dark";
+  const navigation = useNavigation();
+  const goToDetail = () => {
+    navigation.navigate("Stack", { screen: "Detail", params: { ...fullData } });
+  };
   return (
-    <View style={{ flex: 1 }}>
-      <BgImg
-        style={StyleSheet.absoluteFill}
-        source={{ uri: makeImgPath(backdrop_path) }}
-      ></BgImg>
-      <BlurView
-        blurType={isDark ? "dark" : "light"}
-        blurAmount={30}
-        style={StyleSheet.absoluteFill}
-      >
-        <Wrapper>
-          <Poster path={poster_path} />
-          <Column>
-            <Title>{original_title}</Title>
-            {vote_average > 0 ? <Votes>⭐️{vote_average}/10</Votes> : null}
-            <Overview>{overview.slice(0, 100)}...</Overview>
-          </Column>
-        </Wrapper>
-      </BlurView>
-    </View>
+    <TouchableWithoutFeedback onPress={goToDetail}>
+      <View style={{ flex: 1 }}>
+        <BgImg
+          style={StyleSheet.absoluteFill}
+          source={{ uri: makeImgPath(backdrop_path) }}
+        ></BgImg>
+        <BlurView
+          blurType={isDark ? "dark" : "light"}
+          blurAmount={30}
+          style={StyleSheet.absoluteFill}
+        >
+          <Wrapper>
+            <Poster path={poster_path} />
+            <Column>
+              <Title>{original_title}</Title>
+              {vote_average > 0 ? <Votes>⭐️{vote_average}/10</Votes> : null}
+              <Overview>{overview.slice(0, 100)}...</Overview>
+            </Column>
+          </Wrapper>
+        </BlurView>
+      </View>
+    </TouchableWithoutFeedback>
   );
 };
 

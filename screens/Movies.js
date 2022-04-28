@@ -53,6 +53,7 @@ const Movies = () => {
       originalTitle={item.original_title}
       overview={item.overview}
       releaseDate={item.release_date}
+      fullData={item}
     />
   );
 
@@ -88,6 +89,7 @@ const Movies = () => {
                 original_title={movie.original_title}
                 vote_average={movie.vote_average}
                 overview={movie.overview}
+                fullData={movie}
               />
             ))}
           </Swiper>
